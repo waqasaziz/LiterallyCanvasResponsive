@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Literally Canvas</title>
+    <link href="../_assets/literallycanvas.css" rel="stylesheet" />
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=1920, initial-scale=1"
+      user-scalable="no"
+    />
+
+    <style type="text/css">
+      .fs-container-sender .literally {
+        height: 800px;
+        width: 800px;
+        position: relative;
+      }
+
+      .fs-container-rec {
+        display: none;
+      }
+      .fs-container-rec .literally {
+        height: 20vh;
+        width: 20vw;
+        position: relative;
+      }
+    </style>
+  </head>
+
+  <body>
+    <table>
+      <tr>
+        <td>
+          <div class="fs-container-sender"><div id="lc-sender"></div></div>
+          <!-- <input type="button" id="senderButton" value="Send Message" /> -->
+          <input type="button" id="storeButton" value="Store Message" />
+          <input type="button" id="loadButton" value="Load Message" />
+          <input type="button" id="clearButton" value="Clear Message" />
+        </td>
+        <td>
+          <!-- <div class="fs-container-rec"><div id="lc-rec"></div></div>
+          <input type="button" id="recButton" value="Send Message" /> -->
+        </td>
+      </tr>
+    </table>
+
+    <!-- you really ought to include react-dom, but for react 0.14 you don't strictly have to. -->
+    <script src="../_js_libs/react-0.14.3.js"></script>
+    <script src="../_js_libs/literallycanvas.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.js"
+      integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+      crossorigin="anonymous"
+    ></script>
+
+    <script type="text/javascript">
+      var siteWidth = 1920;
+      var scale = screen.width / siteWidth;
+
+      document
+        .querySelector('meta[name="viewport"]')
+        .setAttribute(
+          "content",
+          "width=" + siteWidth + ", initial-scale=" + scale + ""
+        );
+
+      var lcSender = LC.init(document.getElementById("lc-sender"), {
+        imageURLPrefix: "../_assets/lc-images",
+        toolbarPosition: "bottom",
+        defaultStrokeWidth: 5,
+        strokeWidths: [1, 2, 3, 5, 30]
+      });
+
+      var localStorageKey = "drawing";
+
+      document
+        .getElementById("storeButton")
+        .addEventListener("click", function(event) {
+          var snapshot = lcSender.getSnapshot();
+
+          localStorage.setItem(localStorageKey, JSON.stringify(snapshot));
+
+          event.preventDefault();
+        });
+
+      document
+        .getElementById("loadButton")
+        .addEventListener("click", function(event) {
+          var snapshot = JSON.parse(localStorage.getItem(localStorageKey));
+
+          lcSender.loadSnapshot(snapshot);
+          event.preventDefault();
+        });
+
+      document
+        .getElementById("clearButton")
+        .addEventListener("click", function(event) {
+          localStorage.clear();
+          event.preventDefault();
+        });
+
+      // document
+      //   .getElementById("senderButton")
+      //   .addEventListener("click", function(event) {
+      //     var recCanvas = $(".fs-container-rec canvas").get(0);
+      //     var senderCanvas = $(".fs-container-sender canvas").get(0);
+
+      //     var snapshot = lcSender.getSnapshot();
+      //     var shapes = LC.snapshotToShapes(snapshot);
+      //     console.log(shapes);
+
+      //     LC.renderShapesToCanvas(
+      //       shapes,
+      //       {
+      //         x: 0,
+      //         y: 0,
+      //         width: senderCanvas.width,
+      //         height: senderCanvas.height
+      //       },
+      //       1,
+      //       recCanvas
+      //     );
+
+      //     event.preventDefault();
+      //   });
+
+      // var lcRec = LC.init(document.getElementById("lc-rec"), {
+      //   imageURLPrefix: "../_assets/lc-images",
+      //   toolbarPosition: "bottom",
+      //   defaultStrokeWidth: 5,
+      //   strokeWidths: [1, 2, 3, 5, 30]
+      // });
+
+      // document
+      //   .getElementById("recButton")
+      //   .addEventListener("click", function(event) {
+      //     var senderCanvas = $(".fs-container-sender canvas").get(0);
+      //     var recCanvas = $(".fs-container-rec canvas").get(0);
+
+      //     var snapshot = lcRec.getSnapshot();
+      //     var shapes = LC.snapshotToShapes(snapshot);
+
+      //     LC.renderShapesToCanvas(
+      //       shapes,
+      //       {
+      //         x: 0,
+      //         y: 0,
+      //         width: senderCanvas.width,
+      //         height: senderCanvas.height
+      //       },
+      //       1,
+      //       senderCanvas
+      //     );
+
+      //     event.preventDefault();
+      //   });
+    </script>
+  </body>
+</html>
